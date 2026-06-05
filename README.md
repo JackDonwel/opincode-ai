@@ -99,6 +99,21 @@ Version bumps on `main` automatically create the matching `vX.Y.Z` tag and publi
 
 - **Arch / AUR:** `yay -S opincode-bin` (or `paru`, etc.). Tracks the latest release.
 - **AppImage:** needs FUSE. Without it: `./OpinCode_*.AppImage --appimage-extract-and-run`. On Wayland with rendering glitches, try `WEBKIT_DISABLE_DMABUF_RENDERER=1`. Otherwise the `.deb` / `.rpm` packages link against the system GTK stack and tend to be smoother.
+- **Command line launch:** after installing a release package, run `opincode` from your terminal.
+- **Local source build:** after `bun tauri build`, link or copy the generated Linux binary into a directory on your `PATH`:
+
+```bash
+ln -sf "$PWD/src-tauri/target/release/opincode" "$HOME/.local/bin/opincode"
+opincode
+```
+
+If `~/.local/bin` is not on your `PATH`, add this to your shell profile:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+- **Linux dependencies:** install the Tauri Linux prerequisites for your distro before building from source. The app uses the system GTK/WebKit stack, so missing `webkit2gtk`, GTK, or FUSE packages usually show up as launch or packaging errors.
 
 ## Configure AI
 
@@ -125,23 +140,6 @@ bun tauri build        # production bundle
 bun x tsc --noEmit          # frontend type-check
 cd src-tauri && cargo clippy    # Rust lint
 ```
-
-## Changelog
-
-For full release notes, see the [.github/release-notes](.github/release-notes/) directory.
-
-### v0.0.5
-
-This release introduces major inline-pill input editor updates, recursive folder and directory parsing, new Z.AI and Moonshot AI providers, settings cards UI polish, subagent spawn representation styling, and editor syntax additions:
-- **Inline Pill Input Editor**: Replaced the plain input text area with a contenteditable-based rich input editor. Files, folders, snippets, commands, and skills are rendered as interactive inline pills. Fixed caret focus snapping bugs and backspace delete synchronization.
-- **Trigger Characters**: Autocomplete picker now supports slash (/) and dollar ($) characters to trigger and execute skills.
-- **Recursive Folder Attachments**: Attaching folders to the composer now recursively reads the actual text content of files instead of just listing their paths. Dir-based skills also parse all files in their directories.
-- **User Prompt Visibility**: Preserved the user prompt message in the chat bubble by moving it outside the skill XML block. Skill chips are rendered inline in blue without border containers, using dynamic script (sparkles) or dir (opin leaf) icons.
-- **Clean Session Renaming**: Fixed raw XML tags leaking into sidebar session titles by filtering out XML blocks (skills, folders, snippets, selections) in the title derivation algorithm.
-- **Z.AI and Moonshot AI Providers**: Added native integration and models (glm-5.1, glm-5, glm-4-flash, kimi-k2.6, kimi-k2.5, moonshot-v1-8k) for Z.AI and Moonshot AI providers.
-- **Settings UI & card aesthetics**: Updated Settings cards to use rounded-2xl glassmorphic borders and backgrounds. Auto-scrolls, flashes, and focuses the respective provider key fields when clicked.
-- **Subagent spawn representations**: Spawned subagents display as monochromatic cards with dynamic agent icons (Opin, Rob, Supricon, Monkin, Diom), custom colors, and descriptive task summaries.
-- **Editor Additions**: Added swift legacy-mode loader for Swift highlighting/formatting and mapped MDX extension to markdown language parser.
 
 ## Tech stack
 
